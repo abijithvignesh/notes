@@ -1,19 +1,34 @@
-const Sidebar = () => {
+const Sidebar = ({ notes, addNote, deleteNote, activeNote, setActiveNote }) => {
+  const sortedNotes = notes.sort((a, b) => b.lastModified - a.lastModified);
   return (
     <div className="app-sidebar">
       <div className="app-sidebar-header">
         <h1>Notes</h1>
-        <button>Add</button>
+        <button onClick={addNote}>Add</button>
       </div>
       <div className="app-sidebar-notes">
-        <div className="app-sidebar-note">
-            <div className="sidebar-note-title">
-                <strong>Title</strong>
-                <button>Delete</button>
+        {sortedNotes.map((note) => {
+          return (
+            <div
+              className={`app-sidebar-note ${
+                note.id === activeNote && "active"
+              }`}
+              onClick={() => setActiveNote(note.id)}
+            >
+              <div className="sidebar-note-title">
+                <strong>{note.title}</strong>
+                <button onClick={() => deleteNote(note.id)}>Delete</button>
+              </div>
+              <p>{note.body && note.body.substr(0, 100) + "..."}</p>
+              <small className="note-meta">
+              {new Date(note.lastModified).toLocaleDateString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+              </small>
             </div>
-            <p>Note Preview</p>
-            <small className="note-meta">Last modified date </small>
-        </div>
+          );
+        })}
       </div>
     </div>
   );
